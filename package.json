@@ -1,0 +1,26 @@
+{
+    "name": "botardo-discord",
+    "version": "0.0.1",
+    "description": "Discord bot for educational purposes",
+    "main": "botardo.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mbravovaisma/botardo-discord.git"
+    },
+    "author": "Matias Bravo",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/mbravovaisma/botardo-discord/issues"
+    },
+    "homepage": "https://github.com/mbravovaisma/botardo-discord#readme",
+    "dependencies": {
+        "@discordjs/opus": "^0.6.0",
+        "discord.js": "^12.5.3",
+        "ffmpeg": "0.0.4",
+        "fluent-ffmpeg": "^2.1.2",
+        "ytdl-core": "^4.9.1"
+    }
+}
