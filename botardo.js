@@ -4,7 +4,7 @@ const { prefix, token } = require("./config.json");
 
 /* Libs */
 const Discord = require("discord.js");
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 
 /* Discord client */
 const client = new Discord.Client();
@@ -38,7 +38,7 @@ client.on("message", (message) => {
 
 async function play(message) {
     const SONG_URL = message.content.split(" ")[1];
-
+    
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel) {
         return message.channel.send(
@@ -52,10 +52,10 @@ async function play(message) {
             "I need the permissions to join and speak in your voice channel!"
         );
     }
+    
+    let connection = await voiceChannel.join();
 
-    var connection = await voiceChannel.join();
-
-    connection.play(ytdl(SONG_URL))
+    connection.play(await ytdl(SONG_URL), { type: "opus" })
     //const dispatcher = 
 
     //dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
