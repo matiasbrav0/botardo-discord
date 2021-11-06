@@ -2,10 +2,7 @@
     "name": "botardo-discord",
     "version": "0.0.1",
     "description": "Discord bot for educational purposes",
-    "main": "botardo.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
+    "main": "index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/mbravovaisma/botardo-discord.git"
