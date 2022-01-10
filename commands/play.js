@@ -1,4 +1,5 @@
 const ytdl = require("ytdl-core-discord");
+const ytsearch = require('youtube-search-without-api-key');
 
 module.exports = {
     name: "play",
@@ -9,9 +10,10 @@ module.exports = {
         const serverQueue = musicPlayer.queue.get(guild.id);
 
         if (!song) {
-            serverQueue.voiceChannel.leave();
+            //serverQueue.voiceChannel.leave();
             musicPlayer.queue.delete(guild.id);
-            return serverQueue.textChannel.send("Bye bye larva!");
+            return null
+            //return serverQueue.textChannel.send("Bye bye larva!");
         }
 
         try {
@@ -31,7 +33,7 @@ module.exports = {
     },
 
     async execute(message, musicPlayer) {
-        /* Permissions and validations */
+        // Permissions and validations
         const voiceChannel = message.member.voice.channel;
         if (!voiceChannel) {
             return message.channel.send(
@@ -46,8 +48,16 @@ module.exports = {
             );
         }
 
-        /* Get info from youtube of my song */
-        const songURL = message.content.split(" ")[1];
+        // If a song url or a song to search?
+        let songURL
+        if (!message.content.includes("://")) {
+            let videoInfo = await ytsearch.search(message.content)
+            songURL = videoInfo[0].url
+        } else {
+            songURL = message.content.split(" ")[1];
+        }
+
+        // Get info from youtube of my song
         const songInfo = (await ytdl.getInfo(songURL)).videoDetails;
         const song = {
             title: songInfo.title,
@@ -55,29 +65,29 @@ module.exports = {
         }
 
         const serverQueue = musicPlayer.queue.get(message.guild.id);
-        if (!serverQueue) {
-            const queueConstruct = {
-                textChannel: message.channel,
-                voiceChannel: voiceChannel,
-                connection: null,
-                songs: []
-            }
-
-            musicPlayer.queue.set(message.guild.id, queueConstruct);
-
-            queueConstruct.songs.push(song);
-
-            try {
-                var connection = await voiceChannel.join();
-                queueConstruct.connection = connection;
-                module.exports.play(musicPlayer, message.guild, queueConstruct.songs[0]);
-            } catch (error) {
-                console.log(error);
-                return message.channel.send(error);
-            }
-        } else {
+        if (serverQueue) {
             serverQueue.songs.push(song);
             return message.channel.send(`${song.title} has been added to the queue!`)
+        }
+
+        const queueConstruct = {
+            textChannel: message.channel,
+            voiceChannel: voiceChannel,
+            connection: null,
+            songs: []
+        }
+
+        musicPlayer.queue.set(message.guild.id, queueConstruct);
+
+        queueConstruct.songs.push(song);
+
+        try {
+            var connection = await voiceChannel.join();
+            queueConstruct.connection = connection;
+            module.exports.play(musicPlayer, message.guild, queueConstruct.songs[0]);
+        } catch (error) {
+            console.log(error);
+            return message.channel.send(error);
         }
     }
 }
